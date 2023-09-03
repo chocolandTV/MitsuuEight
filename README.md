@@ -4,7 +4,6 @@ Car Driving Simulator with difficult Cops
 
 - Prozedural rendering Ground tracks
 - Background is unique
-- Sun is going down and Moon cycle
 - collectables
-- Cop Score
-- Cops can 
+    (- Cop Score
+    - cops can block your way, ram you and distribute nail ribbons)

@@ -66,9 +66,9 @@ public class InputManager : MonoBehaviour
 
     private void SubscribeToInput()
     {
-        // _playerInput.actions["Look"].started += OnLookInput;
-        // _playerInput.actions["Look"].performed += OnLookInput;
-        // _playerInput.actions["Look"].canceled += OnLookInput;
+        _playerInput.actions["Look"].started += OnLookInput;
+        _playerInput.actions["Look"].performed += OnLookInput;
+        _playerInput.actions["Look"].canceled += OnLookInput;
 
         _playerInput.actions["Move"].started += OnMoveInput;
         _playerInput.actions["Move"].performed += OnMoveInput;
@@ -95,9 +95,9 @@ public class InputManager : MonoBehaviour
 
     private void UnsubscribeFromInput()
     {
-        // _playerInput.actions["Look"].started -= OnLookInput;
-        // _playerInput.actions["Look"].performed -= OnLookInput;
-        // _playerInput.actions["Look"].canceled -= OnLookInput;
+        _playerInput.actions["Look"].started -= OnLookInput;
+        _playerInput.actions["Look"].performed -= OnLookInput;
+        _playerInput.actions["Look"].canceled -= OnLookInput;
 
         _playerInput.actions["Move"].started -= OnMoveInput;
         _playerInput.actions["Move"].performed -= OnMoveInput;

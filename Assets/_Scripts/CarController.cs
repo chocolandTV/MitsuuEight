@@ -70,7 +70,7 @@ public class CarController : MonoBehaviour
             rearWheelRight.motorTorque = 0;
         }
     }
-    private void RealTyreUpdate()
+    private void RealTireUpdate()
     {
         HandBrake();
         frontObjectLeft.Rotate(frontWheelLeft.rpm/60*360*Time.deltaTime , 0 ,0);
@@ -95,7 +95,7 @@ public class CarController : MonoBehaviour
 
     }
     private void Update() {
-        RealTyreUpdate();
+        RealTireUpdate();
     }
     #region Controls
     private void OnMoveInput(InputAction.CallbackContext context)
