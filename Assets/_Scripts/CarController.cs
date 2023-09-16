@@ -11,7 +11,8 @@ public class AxleInfo
 {
     public WheelCollider LeftWheel;
     public WheelCollider RightWheel;
-
+    public GameObject LeftWheelVisual;
+    public GameObject RightWheelVisual;
     public bool motor;
     public bool steering;
 }
@@ -47,14 +48,15 @@ public class CarController : MonoBehaviour
     {
         _mainCamera = Camera.main;
     }
-    private void ApplyLocalPosition(WheelCollider collider)
+    private void ApplyLocalPosition(WheelCollider collider , GameObject visualWheel)
     {
-        if (collider.transform.childCount == 0) {
-            return;
-        }
+        
      
-        Transform visualWheel = collider.transform.GetChild(0);
+        // Transform visualWheel = collider.transform.GetChild(0);
         collider.GetWorldPose(out Vector3 position, out Quaternion rotation);
+        rotation.z = rotation.x;
+        rotation.x = 0;
+        rotation.y = visualWheel.transform.rotation.y;
         visualWheel.transform.position = position;
         visualWheel.transform.rotation = rotation;
     }
@@ -73,8 +75,8 @@ public class CarController : MonoBehaviour
                 x.LeftWheel.motorTorque = motor;
                 x.RightWheel.motorTorque = motor;
             }
-            ApplyLocalPosition(x.LeftWheel);
-            ApplyLocalPosition(x.RightWheel);
+            ApplyLocalPosition(x.LeftWheel, x.LeftWheelVisual);
+            ApplyLocalPosition(x.RightWheel,x.RightWheelVisual);
         }
     }
     #region Controls

@@ -123,9 +123,9 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &94088941 stripped
+--- !u!1 &173209800 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 1878249395586717173, guid: e631ff8fc0ad33d4ea8287ad78db1a68,
+  m_CorrespondingSourceObject: {fileID: 7931961218200564222, guid: e631ff8fc0ad33d4ea8287ad78db1a68,
     type: 3}
   m_PrefabInstance: {fileID: 650473556791626544}
   m_PrefabAsset: {fileID: 0}
@@ -433,6 +433,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 695561599}
   m_CullTransparentMesh: 1
+--- !u!1 &755403584 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1666713201365935884, guid: e631ff8fc0ad33d4ea8287ad78db1a68,
+    type: 3}
+  m_PrefabInstance: {fileID: 650473556791626544}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &760144193 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7141150802494648087, guid: e631ff8fc0ad33d4ea8287ad78db1a68,
+    type: 3}
+  m_PrefabInstance: {fileID: 650473556791626544}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -588,33 +600,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 861195644}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &908566173 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6635028786258313683, guid: e631ff8fc0ad33d4ea8287ad78db1a68,
-    type: 3}
-  m_PrefabInstance: {fileID: 650473556791626544}
-  m_PrefabAsset: {fileID: 0}
---- !u!65 &908566180
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 908566173}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 5.0569725, y: 2.4504776, z: 10.550784}
-  m_Center: {x: 0.044239044, y: 0.701664, z: 0.1095624}
 --- !u!1 &931465194
 GameObject:
   m_ObjectHideFlags: 0
@@ -714,12 +699,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1434917853 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7138490326179506888, guid: e631ff8fc0ad33d4ea8287ad78db1a68,
-    type: 3}
-  m_PrefabInstance: {fileID: 650473556791626544}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1479731128
 GameObject:
   m_ObjectHideFlags: 0
@@ -1000,6 +979,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1803584016 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7935545049493461041, guid: e631ff8fc0ad33d4ea8287ad78db1a68,
+    type: 3}
+  m_PrefabInstance: {fileID: 650473556791626544}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1907801300
 GameObject:
   m_ObjectHideFlags: 0
@@ -1106,12 +1091,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1907801300}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &1988731057 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7143350845119382279, guid: e631ff8fc0ad33d4ea8287ad78db1a68,
-    type: 3}
-  m_PrefabInstance: {fileID: 650473556791626544}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2004688273
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1185,12 +1164,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9d8dcc4568813764894443b7cca37626, type: 3}
---- !u!1 &2006460443 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7938665117315980782, guid: e631ff8fc0ad33d4ea8287ad78db1a68,
-    type: 3}
-  m_PrefabInstance: {fileID: 650473556791626544}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2037769788
 GameObject:
   m_ObjectHideFlags: 0
@@ -6247,6 +6220,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1666713201365935884, guid: e631ff8fc0ad33d4ea8287ad78db1a68,
+        type: 3}
+      propertyPath: m_Name
+      value: WheelsRearRight
+      objectReference: {fileID: 0}
     - target: {fileID: 6295903818435222377, guid: e631ff8fc0ad33d4ea8287ad78db1a68,
         type: 3}
       propertyPath: m_RootOrder
@@ -6307,10 +6285,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mitsuuu
       objectReference: {fileID: 0}
-    - target: {fileID: 7678040085028830231, guid: e631ff8fc0ad33d4ea8287ad78db1a68,
+    - target: {fileID: 7141150802494648087, guid: e631ff8fc0ad33d4ea8287ad78db1a68,
         type: 3}
-      propertyPath: m_Enabled
-      value: 1
+      propertyPath: m_Name
+      value: WheelRearLeft
       objectReference: {fileID: 0}
     - target: {fileID: 7678040085028830231, guid: e631ff8fc0ad33d4ea8287ad78db1a68,
         type: 3}
@@ -6361,30 +6339,34 @@ PrefabInstance:
         type: 3}
       propertyPath: axleInfos.Array.data[0].LeftWheelVisual
       value: 
-      objectReference: {fileID: 1434917853}
+      objectReference: {fileID: 1803584016}
     - target: {fileID: 7678040085028830231, guid: e631ff8fc0ad33d4ea8287ad78db1a68,
         type: 3}
       propertyPath: axleInfos.Array.data[1].LeftWheelVisual
       value: 
-      objectReference: {fileID: 94088941}
+      objectReference: {fileID: 760144193}
     - target: {fileID: 7678040085028830231, guid: e631ff8fc0ad33d4ea8287ad78db1a68,
         type: 3}
       propertyPath: axleInfos.Array.data[0].RightWheelVisual
       value: 
-      objectReference: {fileID: 1988731057}
+      objectReference: {fileID: 173209800}
     - target: {fileID: 7678040085028830231, guid: e631ff8fc0ad33d4ea8287ad78db1a68,
         type: 3}
       propertyPath: axleInfos.Array.data[1].RightWheelVisual
       value: 
-      objectReference: {fileID: 2006460443}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6635028786258313683, guid: e631ff8fc0ad33d4ea8287ad78db1a68,
+      objectReference: {fileID: 755403584}
+    - target: {fileID: 7935545049493461041, guid: e631ff8fc0ad33d4ea8287ad78db1a68,
         type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 908566180}
+      propertyPath: m_Name
+      value: WheelsfrontLeft
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects:
+    - {fileID: 3527943998270221470, guid: e631ff8fc0ad33d4ea8287ad78db1a68, type: 3}
+    - {fileID: 9103439614779318673, guid: e631ff8fc0ad33d4ea8287ad78db1a68, type: 3}
+    - {fileID: 2674231799501432510, guid: e631ff8fc0ad33d4ea8287ad78db1a68, type: 3}
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e631ff8fc0ad33d4ea8287ad78db1a68, type: 3}
 --- !u!146 &650473556791626545 stripped
 WheelCollider:
