@@ -7,3 +7,5 @@ Car Driving Simulator with difficult Cops
 - collectables
     (- Cop Score
     - cops can block your way, ram you and distribute nail ribbons)
+
+    Sonntag todo: Camera Follow, MapGeneration, Object 3D Blender ( collectable and lePalma), ObjectSpawn in line random on  MapGeneration.chunk 
