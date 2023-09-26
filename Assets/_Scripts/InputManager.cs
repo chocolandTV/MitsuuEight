@@ -30,7 +30,8 @@ public class InputManager : MonoBehaviour
     public static event Action<CallbackContext> OnMousePos;
     public static event Action<CallbackContext> OnMenu;
     public static event Action<CallbackContext> OnHandbrake;
-    
+    public static event Action<CallbackContext> OnBrake;
+    public static event Action<CallbackContext> OnAccelerate;
     private void OnLookInput(CallbackContext context)
     {
         OnLook?.Invoke(context);
@@ -63,6 +64,14 @@ public class InputManager : MonoBehaviour
     {
         OnHandbrake?.Invoke(context);
     }
+    public void OnBrakeInput(CallbackContext context)
+    {
+        OnBrake?.Invoke(context);
+    }
+    public void OnAccelerateInput(CallbackContext context)
+    {
+        OnAccelerate?.Invoke(context);
+    }
 
     private void SubscribeToInput()
     {
@@ -90,6 +99,13 @@ public class InputManager : MonoBehaviour
         _playerInput.actions["Handbrake"].performed += OnMenuInput;
         _playerInput.actions["Handbrake"].canceled += OnMenuInput;
         
+        _playerInput.actions["Brake"].started += OnBrakeInput;
+        _playerInput.actions["Brake"].performed += OnBrakeInput;
+        _playerInput.actions["Brake"].canceled += OnBrakeInput;
+
+        _playerInput.actions["Accelerate"].started += OnAccelerateInput;
+        _playerInput.actions["Accelerate"].performed += OnAccelerateInput;
+        _playerInput.actions["Accelerate"].canceled += OnAccelerateInput;
     }
 
 
@@ -116,9 +132,17 @@ public class InputManager : MonoBehaviour
         _playerInput.actions["Menu"].performed -= OnMenuInput;
         _playerInput.actions["Menu"].canceled -= OnMenuInput;
 
-        _playerInput.actions["Handbrake"].started += OnMenuInput;
-        _playerInput.actions["Handbrake"].performed += OnMenuInput;
-        _playerInput.actions["Handbrake"].canceled += OnMenuInput;
+        _playerInput.actions["Handbrake"].started -= OnMenuInput;
+        _playerInput.actions["Handbrake"].performed -= OnMenuInput;
+        _playerInput.actions["Handbrake"].canceled -= OnMenuInput;
+
+        _playerInput.actions["Brake"].started -= OnBrakeInput;
+        _playerInput.actions["Brake"].performed -= OnBrakeInput;
+        _playerInput.actions["Brake"].canceled -= OnBrakeInput;
+
+        _playerInput.actions["Accelerate"].started -= OnAccelerateInput;
+        _playerInput.actions["Accelerate"].performed -= OnAccelerateInput;
+        _playerInput.actions["Accelerate"].canceled -= OnAccelerateInput;
 
     }
 
