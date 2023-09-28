@@ -32,30 +32,27 @@ public class InputManager : MonoBehaviour
     public static event Action<CallbackContext> OnHandbrake;
     public static event Action<CallbackContext> OnBrake;
     public static event Action<CallbackContext> OnAccelerate;
+    public static event Action<CallbackContext> OnBoost;
+    /// <summary>
+    ///  INPUT METHODS
+    /// </summary>
+  
     private void OnLookInput(CallbackContext context)
     {
         OnLook?.Invoke(context);
     }
-
-
     private void OnMoveInput(CallbackContext context)
     {
         OnMove?.Invoke(context);
     }
-
-
     private void OnZoomInput(CallbackContext context)
     {
         OnZoom?.Invoke(context);
     }
-
-
     private void OnMousePosInput(CallbackContext context)
     {
         OnMousePos?.Invoke(context);
     }
-
-
     private void OnMenuInput(CallbackContext context)
     {
         OnMenu?.Invoke(context);
@@ -72,7 +69,10 @@ public class InputManager : MonoBehaviour
     {
         OnAccelerate?.Invoke(context);
     }
-
+    public void OnBoostInput(CallbackContext context)
+    {
+        OnBoost?.Invoke(context);
+    }
     private void SubscribeToInput()
     {
         _playerInput.actions["Look"].started += OnLookInput;
@@ -106,6 +106,10 @@ public class InputManager : MonoBehaviour
         _playerInput.actions["Accelerate"].started += OnAccelerateInput;
         _playerInput.actions["Accelerate"].performed += OnAccelerateInput;
         _playerInput.actions["Accelerate"].canceled += OnAccelerateInput;
+
+        _playerInput.actions["Boost"].started += OnBoostInput;
+        _playerInput.actions["Boost"].performed += OnBoostInput;
+        _playerInput.actions["Boost"].canceled += OnBoostInput;
     }
 
 
@@ -144,6 +148,9 @@ public class InputManager : MonoBehaviour
         _playerInput.actions["Accelerate"].performed -= OnAccelerateInput;
         _playerInput.actions["Accelerate"].canceled -= OnAccelerateInput;
 
+        _playerInput.actions["Boost"].started -= OnBoostInput;
+        _playerInput.actions["Boost"].performed -= OnBoostInput;
+        _playerInput.actions["Boost"].canceled -= OnBoostInput;
     }
 
 

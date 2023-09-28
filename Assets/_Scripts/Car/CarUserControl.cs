@@ -9,8 +9,11 @@ public class CarUserControl : MonoBehaviour
     private float CameraZoom, _brakeInput, _AccelerateInput, _handBrakeInput;
     private CarController m_car;
     public static CarUserControl Instance;
-    public float MaxSpeed;
-   
+    public float MaxSpeed { get { return m_car.m_MaxSpeed; } }
+    public float Current_KMH { get { return m_car.Velocity.magnitude * 3.6f; } }
+    public float Current_Boost { get { return m_car.BoostCapacity; } }
+
+    private bool _isBoosting;
     private void Awake()
     {
         if (Instance != null)
@@ -21,14 +24,16 @@ public class CarUserControl : MonoBehaviour
         Instance = this;
 
         m_car = GetComponent<CarController>();
-        
+
         SubscribeToInput();
-        DontDestroyOnLoad(gameObject);
+        m_car.EnableDriving();
+        m_car.SetBoostCapacity(100);
     }
     // Start is called before the first frame update
     private void FixedUpdate()
     {
-        m_car.Move(_moveHorizontalInput, _AccelerateInput, _brakeInput, _handBrakeInput);
+        m_car.Move(_moveHorizontalInput, _AccelerateInput, _brakeInput, _handBrakeInput, _isBoosting);
+
 
     }
     #region Controls
@@ -68,13 +73,14 @@ public class CarUserControl : MonoBehaviour
     {
         if (context.started)
         {
-            _handBrakeInput = context.ReadValue<float>();
+            m_car.StartDrift();
+
 
         }
         if (context.canceled)
         {
 
-            _handBrakeInput = context.ReadValue<float>();
+            m_car.EndDrift();
         }
     }
     private void OnBrakeInput(InputAction.CallbackContext context)
@@ -99,7 +105,17 @@ public class CarUserControl : MonoBehaviour
             _AccelerateInput = 0f;
         }
     }
-
+    private void OnboostInput(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            _isBoosting = true;
+        }
+        if (context.canceled)
+        {
+            _isBoosting = false;
+        }
+    }
     private void SubscribeToInput()
     {
 
@@ -110,6 +126,7 @@ public class CarUserControl : MonoBehaviour
         InputManager.OnHandbrake += OnHandbrakeInput;
         InputManager.OnBrake += OnBrakeInput;
         InputManager.OnAccelerate += OnAccelerateInput;
+        InputManager.OnBoost += OnboostInput;
     }
 
     private void UnsubscribeFromInput()
@@ -122,6 +139,7 @@ public class CarUserControl : MonoBehaviour
         InputManager.OnHandbrake -= OnHandbrakeInput;
         InputManager.OnBrake -= OnBrakeInput;
         InputManager.OnAccelerate -= OnAccelerateInput;
+        InputManager.OnBoost -= OnboostInput;
     }
 
 

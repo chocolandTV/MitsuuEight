@@ -18,9 +18,6 @@ public class CarSuspension : MonoBehaviour
     [SerializeField]
     private float m_SuspensionLength;
 
-    [SerializeField]
-    private float m_TurnImpulsePower;
-
     [Header("Visualization")]
     [SerializeField]
     private List<Transform> m_TireTransforms;
@@ -59,4 +56,3 @@ public class CarSuspension : MonoBehaviour
         }
     }
 }
-
