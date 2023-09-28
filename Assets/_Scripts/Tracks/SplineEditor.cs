@@ -37,8 +37,8 @@ public class SplineEditor : MonoBehaviour
     }
     private void OnDrawGizmos()
     {
-        Handles.matrix = transform.localToWorldMatrix;
-        Handles.SphereHandleCap(0, p1, Quaternion.identity, 1f, EventType.Repaint);
-        Handles.SphereHandleCap(1, p2, Quaternion.identity, 1f, EventType.Repaint);
+        // Handles.matrix = transform.localToWorldMatrix;
+        // Handles.SphereHandleCap(0, p1, Quaternion.identity, 1f, EventType.Repaint);
+        // Handles.SphereHandleCap(1, p2, Quaternion.identity, 1f, EventType.Repaint);
     }
 }

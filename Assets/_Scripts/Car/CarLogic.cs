@@ -13,11 +13,13 @@ public class CarLogic : MonoBehaviour
     {
         if(other.CompareTag("Collectable"))
         {
+            Debug.Log("Collect Nitro");
             m_car.AddBoostCapacity(other.GetComponent<Nitro>().NitroValue);
             other.GetComponent<Nitro>().Collect();
         }
          if(other.CompareTag("Respawn"))
         {
+            Debug.Log("Respawn");
             m_car.ResetPosition();
         }
     }

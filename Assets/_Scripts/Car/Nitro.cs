@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Nitro : MonoBehaviour
 {
-    public int NitroValue{get;private set;}
+    public int NitroValue =50;
 
     public void SetNitro(int amount)
     {
