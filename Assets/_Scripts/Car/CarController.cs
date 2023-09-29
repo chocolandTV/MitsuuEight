@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using UnityEngine;
+using UnityEngine.AI;
 
 
 [System.Serializable]
@@ -10,65 +10,30 @@ using UnityEngine;
 public class CarController : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField]
-    private Rigidbody m_RigidBody;
-
-    [SerializeField]
-    private CarSuspension m_Suspension;
-
-    [SerializeField]
-    private List<TrailRenderer> m_SkidmarkRenderers;
-
-    [SerializeField]
-    private ParticleSystem[] m_BoostParticleObjects = new ParticleSystem[2];
-    [Header("Normal Acceleration /Turn")]
-    [SerializeField]
-    private float m_Acceleration;
-
-    public float m_MaxSpeed;
-
-    [SerializeField]
-    private float m_TurnForce;
-
-    [SerializeField]
-    private float m_MaxAngularVelocity;
-
-    [SerializeField]
-    private float m_Grip;
-
-    [Header("Drift Acc/Turn")]
-    [SerializeField]
-    private float m_DriftAcc;
-
-    [SerializeField]
-    private float m_MaxDriftSpeed;
-
-    [SerializeField]
-    private float m_DriftTurnForce;
-
-    [SerializeField]
-    private float m_MaxDriftAngularVelocity;
-
-    [SerializeField]
-    private float m_DriftGrip;
-
-    [Header("Other")]
-    [SerializeField]
-    private float m_MinVelForDrift = 0.5f;
-    [SerializeField]
-    private float m_BoostPower;
-    private bool m_IsDrivingForward;
+    [SerializeField] private Rigidbody m_RigidBody;
+    [SerializeField] private List<ParticleSystem> m_DriftParticles;
+    private ParticleSystem.MainModule _DriftPsMain01, _DriftPsMain02;
+    [SerializeField] private Transform frontLeftWheelTransform, frontRightWheelTransform;
+    [SerializeField] private Transform rearLeftWheelTransform, rearRightWheelTransform;
+    [SerializeField] private ParticleSystem[] m_BoostParticleObjects = new ParticleSystem[2];
+    [Header("Car Settings")]
+    public float CurrentSpeed, maxSteerAngle;
+    [SerializeField] private float maxDriftAngle = 20f;
+    [SerializeField] private Color drift1, drift2, drift3;
+    [SerializeField] public float m_MaxSpeed, m_MaxBoostSpeed;
+    [SerializeField] private float m_BoostPower, m_driftMinSpeed;
     private Vector3 m_StartPos;
-    private bool m_IsDrivingEnabled;
+    private bool m_IsDrivingEnabled, touchingGround;
+    private float realSpeed;
+    public float Velocity { get { return m_RigidBody.velocity.magnitude * 3.6f; } }
+    public float CarEnergyCapacity { get; private set; }
+    private bool isDriftingLeft = false;
+    private bool isDriftingRight = false;
+    private bool isSliding = false;
+    private float outwardsDirftForce = 50000;
 
-    private bool m_SkidmarksActive;
-    public Vector2 Velocity { get; private set; }
+    private float _currentSteerAngle, _driftTime, car_BoostTime, car_BoostPower;
 
-    public float DriftVal { get; private set; }
-
-    public float SpeedVal { get; private set; }
-    public float BoostCapacity { get; private set; }
-    private bool isDrifting = false;
     public void DisableDriving()
     {
         m_IsDrivingEnabled = false;
@@ -81,144 +46,209 @@ public class CarController : MonoBehaviour
     private void Start()
     {
         m_StartPos = gameObject.transform.position;
+        _DriftPsMain01 = m_DriftParticles[0].main;
+        _DriftPsMain02 = m_DriftParticles[1].main;
+        car_BoostTime = 0f;
+        CurrentSpeed = 0f;
+        car_BoostPower = 1f;
+
     }
     public void ResetPosition()
     {
         gameObject.transform.position = m_StartPos;
         // EFFECT
     }
-    public void Move(Vector2 _moveHorizontalInput, float _AccelerateInput, float _brakeInput, float _handBrakeInput, bool _isBoosting)
+    public void Move(float _moveHorizontalInput, float _AccelerateInput, float _brakeInput, bool _boostInput, bool _isJumping)
     {
-
+        isSliding = _isJumping;
         if (!m_IsDrivingEnabled)
         {
             return;
         }
-        if (m_Suspension.isGrounded)
+        // ACCELERATE
+        realSpeed = transform.InverseTransformDirection(m_RigidBody.velocity).z;
+        Debug.Log(realSpeed);
+        if (_AccelerateInput > 0)
         {
-            Vector3 vector = gameObject.transform.forward;
-            if (Physics.Raycast(gameObject.transform.position, -gameObject.transform.up, out var hitInfo, 100f))
-            {
-                Debug.DrawLine(gameObject.transform.position, hitInfo.point, Color.cyan);
-                vector = Quaternion.AngleAxis(Vector3.SignedAngle(gameObject.transform.up, hitInfo.normal, gameObject.transform.right), gameObject.transform.right) * gameObject.transform.forward;
-                Debug.DrawLine(gameObject.transform.position, gameObject.transform.position + vector * 50f, Color.green);
-            }
-            if (_AccelerateInput > 0f)
-            {
-                float num = (isDrifting ? m_DriftAcc : m_Acceleration);
-                float num_Boost = 1;
+            CurrentSpeed = Mathf.Lerp(CurrentSpeed, m_MaxSpeed*_AccelerateInput, Time.fixedDeltaTime * 0.5f);
 
-                if (_isBoosting && BoostCapacity > 20 * Time.fixedDeltaTime)
-                {
-                    Debug.Log("Boosting - Capacity: " + BoostCapacity);
-                    num_Boost = m_BoostPower;
-                    AddBoostCapacity(-(20 * Time.fixedDeltaTime));
-                    BoostEffect();
-                }
-                m_RigidBody.AddForce(_AccelerateInput * num_Boost * num * vector, ForceMode.Acceleration);
-            }
-            if (_brakeInput > 0f)
-            {
-                float num2 = (isDrifting ? m_DriftAcc : m_Acceleration);
+        }
+        else if (_brakeInput > 0)
+        {
+            CurrentSpeed = Mathf.Lerp(CurrentSpeed, -m_MaxSpeed / 1.75f, 1f * Time.fixedDeltaTime);
+        }
+        else
+        {
+            CurrentSpeed = Mathf.Lerp(CurrentSpeed, 0, Time.fixedDeltaTime * 1.5f);
+        }
+        Vector3 vel = transform.forward * CurrentSpeed;
+        vel.y = m_RigidBody.velocity.y;
+        m_RigidBody.velocity = vel;
+        // STEERING
+        _currentSteerAngle = maxSteerAngle * _moveHorizontalInput;
+        frontLeftWheelTransform.localEulerAngles = new Vector3(0, 180 + _currentSteerAngle, 0);
+        frontRightWheelTransform.localEulerAngles = new Vector3(0, 180 + _currentSteerAngle, 0);
+        // Visuals
+        UpdateSingleWheel(frontLeftWheelTransform);
+        UpdateSingleWheel(frontRightWheelTransform);
+        UpdateSingleWheel(rearLeftWheelTransform);
+        UpdateSingleWheel(rearRightWheelTransform);
 
-                m_RigidBody.AddForce(_brakeInput * num2 * -vector, ForceMode.Acceleration);
-            }
-            m_IsDrivingForward = Vector3.Angle(m_RigidBody.velocity, vector) < Vector3.Angle(m_RigidBody.velocity, -vector);
-            float num3 = (isDrifting ? m_MaxDriftSpeed : m_MaxSpeed);
-            m_RigidBody.velocity = Vector3.ClampMagnitude(m_RigidBody.velocity, num3);
-            SpeedVal = Mathf.InverseLerp(0f, num3, m_RigidBody.velocity.magnitude);
-            if (m_Suspension.isGrounded)
-            {
-                // SUS IS GROUNDED
-                _moveHorizontalInput *= SpeedVal;
+        // RealSteering
+        float _steerDirection = _moveHorizontalInput;
+        Vector3 _steerDirVector;
+        float _steerAmount;
 
-                if (!m_IsDrivingForward)
-                {
-                    _moveHorizontalInput = -_moveHorizontalInput;
-                }
-                float num4 = (isDrifting ? m_DriftTurnForce : m_TurnForce);
-                m_RigidBody.AddTorque(gameObject.transform.up * _moveHorizontalInput.x * num4, ForceMode.Acceleration);
-                float num5 = (isDrifting ? m_MaxDriftAngularVelocity : m_MaxAngularVelocity);
-                m_RigidBody.angularVelocity = new Vector3(m_RigidBody.angularVelocity.x, num5 * _moveHorizontalInput.x, m_RigidBody.angularVelocity.z);
-                // END SUS
-            }
-            float value = Vector3.SignedAngle(m_RigidBody.velocity, gameObject.transform.forward, Vector3.up);
-            DriftVal = Mathf.Lerp(-1f, 1f, Mathf.InverseLerp(-80f, 80f, value));
-            if (m_RigidBody.velocity.magnitude > m_MinVelForDrift)
+        if (isDriftingLeft && !isDriftingRight)
+        {
+            _steerDirection = _moveHorizontalInput < 0 ? -1.5f : -0.5f;
+            transform.GetChild(0).localRotation = Quaternion.Lerp(transform.GetChild(0).localRotation, Quaternion.Euler(0, -maxDriftAngle, 0), 8f * Time.fixedDeltaTime);
+
+            if (isSliding && touchingGround)
+                m_RigidBody.AddForce(transform.right * outwardsDirftForce * Time.fixedDeltaTime, ForceMode.Acceleration);
+        }
+        else
+        if (isDriftingRight && !isDriftingLeft)
+        {
+            _steerDirection = _moveHorizontalInput > 0 ? 1.5f : 0.5f;
+            transform.GetChild(0).localRotation = Quaternion.Lerp(transform.GetChild(0).localRotation, Quaternion.Euler(0, maxDriftAngle, 0), 8f * Time.fixedDeltaTime);
+
+            if (isSliding && touchingGround)
+                m_RigidBody.AddForce(transform.right * -outwardsDirftForce * Time.fixedDeltaTime, ForceMode.Acceleration);
+
+        }
+        else
+        {
+            transform.GetChild(0).localRotation = Quaternion.Lerp(transform.GetChild(0).localRotation, Quaternion.Euler(0f, 0f, 0f), 8f * Time.fixedDeltaTime);
+        }
+
+        _steerAmount = realSpeed > 30 ? realSpeed / 4 * _steerDirection : _steerAmount = realSpeed / 1.5f * _steerDirection;
+
+        _steerDirVector = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y + _steerAmount, transform.eulerAngles.z);
+        // This is steering 
+        transform.eulerAngles = Vector3.Lerp(transform.eulerAngles, _steerDirVector, 3 * Time.fixedDeltaTime);
+        // GroundnormalRotation
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, -transform.up, out hit, 0.75f))
+        {
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.FromToRotation(transform.up * 2, hit.normal) * transform.rotation, 7.5f * Time.fixedDeltaTime);
+            touchingGround = true;
+        }
+        else
+        {
+            touchingGround = false;
+        }
+        // DRIFT 
+
+        if (_moveHorizontalInput != 0 && touchingGround && CurrentSpeed > m_driftMinSpeed && _isJumping)
+        {
+            _driftTime += Time.fixedDeltaTime;
+
+            if (_driftTime >= 1.5f && _driftTime < 4)
             {
-                m_RigidBody.AddForce(gameObject.transform.right * DriftVal * (isDrifting ? m_DriftGrip : m_Grip), ForceMode.Acceleration);
+                _DriftPsMain01.startColor = drift1;
+                _DriftPsMain02.startColor = drift1;
 
             }
-            if (!m_SkidmarksActive && isDrifting)
+            if (_driftTime >= 4f && _driftTime < 7)
             {
-                m_SkidmarksActive = true;
-                foreach (TrailRenderer skidmarkRenderer in m_SkidmarkRenderers)
-                {
-                    skidmarkRenderer.emitting = true;
-                }
+                _DriftPsMain01.startColor = drift2;
+                _DriftPsMain02.startColor = drift2;
+
+            }
+            if (_driftTime > 7)
+            {
+                _DriftPsMain01.startColor = drift3;
+                _DriftPsMain02.startColor = drift3;
+
             }
         }
-        else if (m_SkidmarksActive && isDrifting)
+        // RESET
+
+        if (!_isJumping || realSpeed < m_driftMinSpeed)
         {
-            m_SkidmarksActive = false;
-            foreach (TrailRenderer skidmarkRenderer2 in m_SkidmarkRenderers)
-            {
-                skidmarkRenderer2.emitting = false;
-            }
+            isDriftingLeft = false; isDriftingRight = false; isSliding = false;
+            // BoostIncrease
+            car_BoostTime = Mathf.Clamp(_driftTime / 3, 1, 2.5f);
+            _driftTime = 0f;
+            DriftParticle(0, false, Color.yellow);
+            DriftParticle(1, false, Color.yellow);
+
         }
-        Velocity = m_RigidBody.velocity;
-        //update Enginesound speedval
-        // update Enginesound Pitch speedval
+        // BOOST
+        car_BoostTime -= Time.fixedDeltaTime;
+        if (car_BoostTime > 0)
+        {
+            BoostEffect();
+            CurrentSpeed = Mathf.Lerp(CurrentSpeed, m_MaxSpeed * m_BoostPower, 1 * Time.fixedDeltaTime);
+        }
+        if (_boostInput && CarEnergyCapacity > 20 * Time.fixedDeltaTime)
+        {
+            Debug.Log("Boosting - Capacity: " + CarEnergyCapacity);
+            CurrentSpeed = Mathf.Lerp(CurrentSpeed, m_MaxSpeed * m_BoostPower, 1 * Time.fixedDeltaTime);
+            AddBoostCapacity(-(20 * Time.fixedDeltaTime));
+            BoostEffect();
+        }
 
     }
-    public void StartDrift()
+    private void UpdateSingleWheel(Transform wheelTransform)
     {
-        isDrifting = true;
-        foreach (TrailRenderer skidmarkRenderer in m_SkidmarkRenderers)
-        {
-            skidmarkRenderer.emitting = true;
-        }
-        // Drifting Sound
+        wheelTransform.Rotate(0, 0, -90 * Time.fixedDeltaTime * realSpeed * 0.5f);
     }
-    public void EndDrift()
+    public void StartDrift(float _moveHorizontalInput)
     {
-        isDrifting = false;
-        foreach (TrailRenderer skidmarkRenderer in m_SkidmarkRenderers)
+        if (touchingGround)
         {
-            skidmarkRenderer.emitting = false;
+            // transform.GetChild(0).GetComponent<Animator>.SetTrigger("Hop");
+            if (_moveHorizontalInput > 0)
+            {
+                isDriftingRight = true;
+                DriftParticle(1, true, Color.yellow);
+                isDriftingLeft = false;
+            }
+            if (_moveHorizontalInput < 0)
+            {
+                isDriftingLeft = true;
+                DriftParticle(0, true, Color.yellow);
+                isDriftingRight = false;
+            }
         }
-        // sound Stop drifting
     }
+    public void DriftParticle(int side, bool value, Color color)
+    {
+        _DriftPsMain01.startColor = color;
+        _DriftPsMain02.startColor = color;
+        if (value)
+            m_DriftParticles[side].Play();
+        if (!value)
+            m_DriftParticles[side].Stop();
+
+    }
+
     public void AddBoostCapacity(float amount)
     {
-        BoostCapacity += amount;
-        if (BoostCapacity > 100.0f)
+        CarEnergyCapacity += amount;
+        if (CarEnergyCapacity > 100.0f)
         {
-            BoostCapacity = 100f;
+            CarEnergyCapacity = 100f;
         }
-        if (BoostCapacity < 0f)
+        if (CarEnergyCapacity < 0f)
         {
-            BoostCapacity = 0f;
+            CarEnergyCapacity = 0f;
         }
     }
     public void SetBoostCapacity(float amount)
     {
-        BoostCapacity = amount;
+        CarEnergyCapacity = amount;
     }
     public void ResetBoost()
     {
-        BoostCapacity = 0f;
+        CarEnergyCapacity = 0f;
     }
     public void BoostEffect()
     {
         m_BoostParticleObjects[0].Emit((int)m_BoostPower * 5);
         m_BoostParticleObjects[1].Emit((int)m_BoostPower * 5);
     }
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.magenta;
-        Gizmos.DrawSphere(m_RigidBody.centerOfMass + gameObject.transform.position, 0.3f);
-        Gizmos.color = (m_IsDrivingForward ? Color.green : Color.red);
-        Gizmos.DrawSphere(m_RigidBody.position + m_RigidBody.transform.up * 2.5f, 0.3f);
-    }
+
 }

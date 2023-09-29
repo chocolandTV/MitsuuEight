@@ -6,14 +6,14 @@ using UnityEngine.InputSystem;
 public class CarUserControl : MonoBehaviour
 {
     private Vector2 _moveHorizontalInput, _lookInput;
-    private float CameraZoom, _brakeInput, _AccelerateInput, _handBrakeInput;
+    private float CameraZoom, _brakeInput, _AccelerateInput;
+    private bool  _isBoosting, _isJumping;
     private CarController m_car;
     public static CarUserControl Instance;
     public float MaxSpeed { get { return m_car.m_MaxSpeed; } }
-    public float Current_KMH { get { return m_car.Velocity.magnitude * 3.6f; } }
-    public float Current_Boost { get { return m_car.BoostCapacity; } }
+    public float Current_KMH { get { return m_car.Velocity; } }
+    public float Current_Boost { get { return m_car.CarEnergyCapacity; } }
 
-    private bool _isBoosting;
     private void Awake()
     {
         if (Instance != null)
@@ -32,7 +32,7 @@ public class CarUserControl : MonoBehaviour
     // Start is called before the first frame update
     private void FixedUpdate()
     {
-        m_car.Move(_moveHorizontalInput, _AccelerateInput, _brakeInput, _handBrakeInput, _isBoosting);
+        m_car.Move(_moveHorizontalInput.normalized.x, _AccelerateInput, _brakeInput, _isBoosting, _isJumping);
 
 
     }
@@ -69,18 +69,19 @@ public class CarUserControl : MonoBehaviour
             // OPEN / CLOSE  MENU 
         }
     }
-    private void OnHandbrakeInput(InputAction.CallbackContext context)
+    private void OnJumpInput(InputAction.CallbackContext context)
     {
         if (context.started)
         {
-            m_car.StartDrift();
-
+           
+            _isJumping = true;
+            m_car.StartDrift(_moveHorizontalInput.normalized.x);
 
         }
         if (context.canceled)
         {
 
-            m_car.EndDrift();
+            _isJumping = false;
         }
     }
     private void OnBrakeInput(InputAction.CallbackContext context)
@@ -123,7 +124,7 @@ public class CarUserControl : MonoBehaviour
         InputManager.OnLook += OnLookInput;
         InputManager.OnZoom += OnZoomInput;
         InputManager.OnMenu += OnMenuInput;
-        InputManager.OnHandbrake += OnHandbrakeInput;
+        InputManager.OnJump += OnJumpInput;
         InputManager.OnBrake += OnBrakeInput;
         InputManager.OnAccelerate += OnAccelerateInput;
         InputManager.OnBoost += OnboostInput;
@@ -136,7 +137,7 @@ public class CarUserControl : MonoBehaviour
         InputManager.OnLook -= OnLookInput;
         InputManager.OnZoom -= OnZoomInput;
         InputManager.OnMenu -= OnMenuInput;
-        InputManager.OnHandbrake -= OnHandbrakeInput;
+        InputManager.OnJump -= OnJumpInput;
         InputManager.OnBrake -= OnBrakeInput;
         InputManager.OnAccelerate -= OnAccelerateInput;
         InputManager.OnBoost -= OnboostInput;
