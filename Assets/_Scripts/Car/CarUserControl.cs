@@ -12,7 +12,7 @@ public class CarUserControl : MonoBehaviour
     public static CarUserControl Instance;
     public float MaxSpeed { get { return m_car.m_MaxSpeed; } }
     public float Current_KMH { get { return m_car.Velocity; } }
-    public float Current_Boost { get { return m_car.CarEnergyCapacity; } }
+    public float Current_Life { get { return m_car.CarLife; } }
 
     private void Awake()
     {
@@ -43,6 +43,10 @@ public class CarUserControl : MonoBehaviour
         {
             _moveHorizontalInput = context.ReadValue<Vector2>();
 
+        }
+        if(context.canceled)
+        {
+            _moveHorizontalInput = Vector2.zero;
         }
 
     }
@@ -111,6 +115,7 @@ public class CarUserControl : MonoBehaviour
         if (context.performed)
         {
             _isBoosting = true;
+            Debug.Log("isBoosting");
         }
         if (context.canceled)
         {

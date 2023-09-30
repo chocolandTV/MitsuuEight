@@ -7,6 +7,7 @@ public class CarBrakeLight : MonoBehaviour
     // Start is called before the first frame update
     [SerializeField] Light[] breakLightsInner;
     [SerializeField] Light[] breakLightsOuter;
+    [SerializeField] GameObject backLight01, backLight02;
     public static CarBrakeLight Instance{get; private set;}
 
    
@@ -21,14 +22,14 @@ public class CarBrakeLight : MonoBehaviour
 
     }
    
-    public void CarBrakeVisualEffect()
+    public void CarBrakeVisualEffect(float intensity)
     {
         
         breakLightsOuter[0].gameObject.SetActive(true);
         breakLightsOuter[1].gameObject.SetActive(true);
 
-        breakLightsInner[0].intensity = 10f;
-        breakLightsInner[1].intensity = 10f;
+        breakLightsInner[0].intensity = intensity;
+        breakLightsInner[1].intensity = intensity;
     }
     public void CarBrakeVisualEffectOff()
     {
@@ -38,6 +39,11 @@ public class CarBrakeLight : MonoBehaviour
 
         breakLightsInner[0].intensity = 0.2f;
         breakLightsInner[1].intensity =0.2f;
+    }
+    public void SetCarBackLights(bool value)
+    {
+        backLight01.SetActive(value);
+        backLight02.SetActive(value);
     }
 
 }

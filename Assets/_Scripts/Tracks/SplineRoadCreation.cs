@@ -28,9 +28,9 @@ public class SplineRoadCreation : MonoBehaviour
         for (int i = 0; i < resolution; i++)
         {
             float t = step *i;
-            m_splineEditor.SplineEditorWidth(t, out Vector3 p1, out Vector3 p2);
-            m_vertsP1.Add(p1);
-            m_vertsP2.Add(p2);
+        //    '' m_splineEditor.SplineEditorWidth(t, out Vector3 p1, out Vector3 p2);
+            // m_vertsP1.Add(p1);
+            // m_vertsP2.Add(p2);
         }
     }
 }
