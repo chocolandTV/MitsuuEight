@@ -22,12 +22,15 @@ public class SplineEditor : MonoBehaviour
     private void Update()
     {
        m_splineContainer.Evaluate(m_splineIndex, m_time, out position, out tangent, out upVector);
+    
     }
     
     private void OnDrawGizmos()
     {
-        Handles.matrix = transform.localToWorldMatrix;
-        Handles.SphereHandleCap(0, position, Quaternion.identity, 1f, EventType.Repaint);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawCube(Vector3.zero, Vector3.one *5);
+        Gizmos.DrawCube(position, Vector3.one*5);
+       
         
     }
 }
