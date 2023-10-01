@@ -14,13 +14,15 @@ public class CarController : MonoBehaviour
     [SerializeField] private Rigidbody m_RigidBody;
     [SerializeField] private List<ParticleSystem> m_DriftParticles;
     private ParticleSystem.MainModule _DriftPsMain01, _DriftPsMain02;
-    [SerializeField] private Transform frontLeftWheelTransform, frontRightWheelTransform,frontRightWheelSteering, frontLeftWheelSteering;
+    [SerializeField] private Transform frontLeftWheelTransform, frontRightWheelTransform, frontRightWheelSteering, frontLeftWheelSteering;
     [SerializeField] private Transform rearLeftWheelTransform, rearRightWheelTransform;
     [SerializeField] private ParticleSystem[] m_BoostParticleObjects = new ParticleSystem[2];
     [SerializeField] private Animator car_Animator;
     [SerializeField] private Transform car_groundCheck;
     [Header("Car Settings")]
-    public float CurrentSpeed, maxSteerAngle;
+    [HideInInspector]
+    public float CurrentSpeed;
+    [SerializeField] private float maxSteerAngle;
     [SerializeField] private float maxDriftAngle = 20f;
     [SerializeField] private Color drift1, drift2, drift3;
     [SerializeField] public float m_MaxSpeed, m_MaxBoostSpeed;
@@ -58,7 +60,7 @@ public class CarController : MonoBehaviour
         CurrentSpeed = 0f;
         car_BoostPower = 1f;
         carBrakeLight = GetComponent<CarBrakeLight>();
-        CarLife =100f;
+        CarLife = 100f;
 
     }
     public void ResetPosition()
@@ -75,31 +77,31 @@ public class CarController : MonoBehaviour
         }
         // ACCELERATE
         realSpeed = transform.InverseTransformDirection(m_RigidBody.velocity).z;
-        
+
         if (_AccelerateInput > 0)
         {
-            CurrentSpeed = Mathf.Lerp(CurrentSpeed, m_MaxSpeed*_AccelerateInput, Time.fixedDeltaTime * 0.5f);
+            CurrentSpeed = Mathf.Lerp(CurrentSpeed, m_MaxSpeed * _AccelerateInput, Time.fixedDeltaTime * 0.5f);
 
         }
         else if (_brakeInput > 0)
         {
             CurrentSpeed = Mathf.Lerp(CurrentSpeed, -m_MaxSpeed / 1.75f, 1f * Time.fixedDeltaTime);
             carBrakeLight.CarBrakeVisualEffect(_brakeInput);
-            if(CurrentSpeed < 0 && !isDrivingBackwards)
+            if (CurrentSpeed < 0 && !isDrivingBackwards)
             {
                 isDrivingBackwards = true;
                 carBrakeLight.SetCarBackLights(isDrivingBackwards);
             }
-            
+
         }
-        if(_brakeInput == 0)
+        if (_brakeInput == 0)
         {
             carBrakeLight.CarBrakeVisualEffectOff();
-            if(isDrivingBackwards)
-                {
-                    isDrivingBackwards = false;
-                    carBrakeLight.SetCarBackLights(isDrivingBackwards);
-                }
+            if (isDrivingBackwards)
+            {
+                isDrivingBackwards = false;
+                carBrakeLight.SetCarBackLights(isDrivingBackwards);
+            }
         }
         else
         {
@@ -128,7 +130,8 @@ public class CarController : MonoBehaviour
             _steerDirection = _moveHorizontalInput < 0 ? -1.5f : -0.5f;
             transform.GetChild(0).localRotation = Quaternion.Lerp(transform.GetChild(0).localRotation, Quaternion.Euler(0, -maxDriftAngle, 0), 8f * Time.fixedDeltaTime);
 
-            if (isSliding && touchingGround){
+            if (isSliding && touchingGround)
+            {
                 m_RigidBody.AddForce(transform.right * outwardsDirftForce * Time.fixedDeltaTime, ForceMode.Acceleration);
                 Drift_Emit(0);
             }
@@ -139,7 +142,8 @@ public class CarController : MonoBehaviour
             _steerDirection = _moveHorizontalInput > 0 ? 1.5f : 0.5f;
             transform.GetChild(0).localRotation = Quaternion.Lerp(transform.GetChild(0).localRotation, Quaternion.Euler(0, maxDriftAngle, 0), 8f * Time.fixedDeltaTime);
 
-            if (isSliding && touchingGround){
+            if (isSliding && touchingGround)
+            {
                 m_RigidBody.AddForce(transform.right * -outwardsDirftForce * Time.fixedDeltaTime, ForceMode.Acceleration);
                 Drift_Emit(1);
             }
@@ -170,7 +174,7 @@ public class CarController : MonoBehaviour
 
         if (_moveHorizontalInput != 0 && touchingGround && CurrentSpeed > m_driftMinSpeed && _isJumping)
         {
-            
+
             _driftTime += Time.fixedDeltaTime;
 
             if (_driftTime >= 1.5f && _driftTime < 4)
@@ -213,7 +217,7 @@ public class CarController : MonoBehaviour
         }
         if (_boostInput && CarLife > 20 * Time.fixedDeltaTime)
         {
-            
+
             CurrentSpeed = Mathf.Lerp(CurrentSpeed, m_MaxSpeed * m_BoostPower, 1 * Time.fixedDeltaTime);
             AddLife(-(20 * Time.fixedDeltaTime));
             BoostEffect();
@@ -229,7 +233,7 @@ public class CarController : MonoBehaviour
         if (touchingGround)
         {
             Debug.Log(" StartDrifting");
-           car_Animator.SetTrigger("isJumping");
+            car_Animator.SetTrigger("isJumping");
             if (_moveHorizontalInput > 0)
             {
                 isDriftingRight = true;
@@ -250,8 +254,8 @@ public class CarController : MonoBehaviour
         _DriftPsMain02.startColor = color;
         if (value)
             m_DriftParticles[side].Play();
-            
-            
+
+
         if (!value)
             m_DriftParticles[side].Stop();
 
