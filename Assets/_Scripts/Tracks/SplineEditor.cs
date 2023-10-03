@@ -10,16 +10,13 @@ public class SplineEditor : MonoBehaviour
     [SerializeField]
     private SplineContainer m_splineContainer;
 
-    [SerializeField]
-    private int m_splineIndex;
-    [SerializeField]
-    [Range(0f, 1f)]
-    private float m_time;
+    [SerializeField]private int m_splineIndex;
+    [SerializeField][Range(0f, 1f)]private float m_time;
 
     float3 position;
     float3 forward;
     float3 upVector;
-    private float m_width = 10f;
+    [SerializeField]private float m_width = 20f;
     private Vector3 p1,p2;
     public void SampleSpineWidth(float _time, out Vector3 p1, out Vector3 p2)
     {

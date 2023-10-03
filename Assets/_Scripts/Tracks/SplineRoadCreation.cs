@@ -11,11 +11,13 @@ public class SplineRoadCreation : MonoBehaviour
     private int resolution;
     private List<Vector3> m_vertsP1, m_vertsP2;
     private MeshFilter m_meshFilter;
+    private MeshCollider m_meshCollider;
     // Start is called before the first frame update
     void Awake()
     {
         Resources.UnloadUnusedAssets();
         m_meshFilter = GetComponent<MeshFilter>();
+        m_meshCollider = GetComponent<MeshCollider>();
         GetVerts();
         BuildMesh();
     }
@@ -106,14 +108,15 @@ public class SplineRoadCreation : MonoBehaviour
         m_meshFilter.mesh = m;
         m.name = gameObject.name;
         m.SetUVs(0, uv);
+        m_meshCollider.sharedMesh = m;
     }
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         for (int i = 0; i < m_vertsP1.Count; i++)
         {
-            Gizmos.DrawSphere(m_vertsP1[i], 10f);
-            Gizmos.DrawSphere(m_vertsP2[i], 10f);
+            Gizmos.DrawSphere(m_vertsP1[i], 1f);
+            Gizmos.DrawSphere(m_vertsP2[i], 1f);
             Gizmos.DrawLine(m_vertsP1[i], m_vertsP2[i]);
 
         }

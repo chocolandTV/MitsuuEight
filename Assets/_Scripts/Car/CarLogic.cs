@@ -17,10 +17,15 @@ public class CarLogic : MonoBehaviour
             m_car.AddLife(other.GetComponent<Nitro>().NitroValue);
             other.GetComponent<Nitro>().Collect();
         }
-         if(other.CompareTag("Respawn"))
+        if(other.CompareTag("Respawn"))
         {
             Debug.Log("Respawn");
             m_car.ResetPosition();
+        }
+        if(other.CompareTag("BoostField"))
+        {
+            Debug.Log("BoostField activated");
+            m_car.StartBoostField();
         }
     }
 }

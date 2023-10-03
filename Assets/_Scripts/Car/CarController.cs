@@ -103,9 +103,9 @@ public class CarController : MonoBehaviour
                 carBrakeLight.SetCarBackLights(isDrivingBackwards);
             }
         }
-        else
+        if(_AccelerateInput == 0f &&  _brakeInput == 0f)
         {
-            CurrentSpeed = Mathf.Lerp(CurrentSpeed, 0, Time.fixedDeltaTime * 1.5f);
+            CurrentSpeed = Mathf.Lerp(CurrentSpeed, 0, Time.fixedDeltaTime * 0.5f);
         }
         Vector3 vel = transform.forward * CurrentSpeed;
         vel.y = m_RigidBody.velocity.y;
@@ -227,6 +227,10 @@ public class CarController : MonoBehaviour
     private void UpdateSingleWheel(Transform wheelTransform)
     {
         wheelTransform.Rotate(0, 0, 90 * Time.fixedDeltaTime * realSpeed * 0.5f);
+    }
+    public void StartBoostField()
+    {
+        car_BoostTime =3f;
     }
     public void StartDrift(float _moveHorizontalInput)
     {
