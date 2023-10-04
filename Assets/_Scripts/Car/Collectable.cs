@@ -8,5 +8,6 @@ public class Collectable : MonoBehaviour
     public void Collect_Item()
     {
         CollectionManager.Stage01_Collection.Add(id);
+        Destroy(gameObject);
     }
 }
