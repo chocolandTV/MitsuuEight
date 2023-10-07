@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class LapManager : MonoBehaviour
 {
@@ -8,8 +9,37 @@ public class LapManager : MonoBehaviour
     [SerializeField] private int Lap_Checkpoints;
     private List<bool> checkPointsDone = new List<bool>();
     private List<Vector3> GhostData = new List<Vector3>();
-    public int Lap_Current =1;
+    public static int Lap_Current =1;
+    private float StageStartTime, stageTime;
+    private bool stageStarts = false;
     int _ChecksMissing = 0;
+    public static LapManager Instance;
+    void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        stageStarts = false;
+        for (int i = 0; i < Lap_Checkpoints; i++)
+        {
+            checkPointsDone.Add(false);
+        }
+        checkPointsDone[Lap_Checkpoints-1] = true;
+    }
+    public int GetLapRounds()
+    {
+        return Lap_Rounds;
+    }
+    
+    public void StartStage()
+    {
+        
+        stageStarts = true;
+        HUD_Manager.StageStartTime  = Time.timeSinceLevelLoad;
+    }
     
     public void CheckpointSet(int _checkpoint_id, Vector3 pos)
     {
@@ -21,15 +51,25 @@ public class LapManager : MonoBehaviour
         }
         else{
             Debug.Log("Checkpoint: Allready Checked");
+            if(checkPointsDone[Lap_Checkpoints-1] == true && Lap_Current == 1)
+            {
+                checkPointsDone[Lap_Checkpoints-1] = false;
+            }
         }
         if(CheckLapProgress())
         {
-            Lap_Current ++;
             if(Lap_Current >= Lap_Rounds)
             {
+                HUD_Manager.Instance.UpdateTimeLapRoundText(Lap_Current,Time.timeSinceLevelLoad-HUD_Manager.StageStartTime);
                 StageWin();
-            }
+                return;
+            }else{
+            HUD_Manager.Instance.UpdateTimeLapRoundText(Lap_Current,Time.timeSinceLevelLoad-HUD_Manager.StageStartTime);
+            Debug.Log("Next Round");
+            Lap_Current ++;
+            HUD_Manager.Instance.UpdateLapRound();
             ResetCheckPoints();
+            }
         }
     }
     private void StageWin()
@@ -51,7 +91,7 @@ public class LapManager : MonoBehaviour
     }
     private bool CheckLapProgress()
     {
-        
+        _ChecksMissing = 0;
         for (int i = 0; i < checkPointsDone.Count; i++)
         {
             if(!checkPointsDone[i])

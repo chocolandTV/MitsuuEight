@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
-    [SerializeField]private AudioVisualizer audioVisualizer;
+    private AudioVisualizer audioVisualizer;
     public static SoundManager Instance{get;private set;}
-
     void Awake()
     {
         if(Instance != null)
@@ -15,6 +14,7 @@ public class SoundManager : MonoBehaviour
             return;
         }
         Instance = this;
+        audioVisualizer = GetComponent<AudioVisualizer>();
     }
     public AudioVisualizer Audio_Visualizer()
     {

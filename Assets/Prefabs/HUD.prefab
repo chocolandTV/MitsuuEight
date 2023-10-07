@@ -1731,7 +1731,7 @@ GameObject:
   - component: {fileID: 7492025246350090362}
   - component: {fileID: 395094157350859440}
   m_Layer: 5
-  m_Name: Life10
+  m_Name: Collectable_value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2311,7 +2311,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
-  m_AdditionalShaderChannelsFlag: 1
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -2379,4 +2379,23 @@ MonoBehaviour:
   - {r: 1, g: 0.42874607, b: 0.33490568, a: 1}
   - {r: 0.3679245, g: 0.0519117, b: 0, a: 1}
   lifeContainerFillObject: {fileID: 5420004637761646307}
-  number: []
+  changeSprites:
+  - {fileID: 8765638026349424475}
+  - {fileID: 7282568943903804846}
+  - {fileID: 7455504381800477384}
+  - {fileID: 9170256232634304468}
+  - {fileID: 6507864092835795397}
+  - {fileID: 395094157350859440}
+  - {fileID: 1872491490505725465}
+  time_text: {fileID: 3125051208343968604}
+  numbers:
+  - {fileID: 2800000, guid: e9fc1528795e6c349b7fa6f101e81485, type: 3}
+  - {fileID: 2800000, guid: 461c8177afe050245a3b2096fc50aba0, type: 3}
+  - {fileID: 2800000, guid: 4cdb6f71a0d9da544ac7bd41534fa377, type: 3}
+  - {fileID: 2800000, guid: 2e1b5399b8dcd7845b0cc4abc5759ca5, type: 3}
+  - {fileID: 2800000, guid: d88fbb94ae4543e4dbbb83af0300641f, type: 3}
+  - {fileID: 2800000, guid: de4dc58f6c7c0ca4bb266f18d9db309e, type: 3}
+  - {fileID: 2800000, guid: 33d6e253cefd2c2408d79da918b8db2e, type: 3}
+  - {fileID: 2800000, guid: 86578006205f64d4cb3b51fb0d618fe5, type: 3}
+  - {fileID: 2800000, guid: 2b239ebc1bcb1e44c8ec8a7c31b72b6d, type: 3}
+  - {fileID: 2800000, guid: 18752a5f74bc3a54a8c1cbeb2ac59397, type: 3}

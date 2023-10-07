@@ -13,7 +13,7 @@ public class CarUserControl : MonoBehaviour
     public float MaxSpeed { get { return m_car.m_MaxSpeed; } }
     public float Current_KMH { get { return m_car.Velocity; } }
     public float Current_Life { get { return m_car.CarLife; } }
-
+    public float Current_Nitro { get { return m_car.CarNitro; } }
     private void Awake()
     {
         if (Instance != null)
@@ -115,7 +115,7 @@ public class CarUserControl : MonoBehaviour
         if (context.performed)
         {
             _isBoosting = true;
-            Debug.Log("isBoosting");
+            
         }
         if (context.canceled)
         {

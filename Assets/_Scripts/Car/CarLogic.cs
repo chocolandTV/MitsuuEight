@@ -14,7 +14,7 @@ public class CarLogic : MonoBehaviour
         if (other.CompareTag("Collectable"))
         {
             Debug.Log("Collect Nitro");
-            m_car.AddLife(other.GetComponent<Nitro>().NitroValue);
+            m_car.AddCarNitro(other.GetComponent<Nitro>().NitroValue);
             other.GetComponent<Nitro>().Collect();
         }
         if (other.CompareTag("Respawn"))
@@ -27,10 +27,17 @@ public class CarLogic : MonoBehaviour
             Debug.Log("BoostField activated");
             m_car.StartBoostField();
         }
-        if (other.CompareTag("Collectable_S"))
+        if(other.CompareTag("Collectable_Cash"))
         {
-            Debug.Log("collect Eight");
-            other.GetComponent<Collectable>().Collect_Item();
+            Debug.Log("Collect 1coin ");
+            CollectionManager.CoinWallet ++;
+            Destroy(other.gameObject);
+        }
+        if(other.CompareTag("Obstacle"))
+        {
+            Debug.Log("ObstacleCrash - Get Damage");
+            m_car.CarDamage +=other.GetComponent<ObstacleDamage>().Damage;
+            Destroy(other.gameObject);
         }
     }
 }

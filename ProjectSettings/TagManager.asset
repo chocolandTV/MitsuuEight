@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Collectable
   - BoostField
+  - Collectable_Cash
+  - Obstacle
   layers:
   - Default
   - TransparentFX

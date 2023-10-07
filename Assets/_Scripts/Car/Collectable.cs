@@ -7,7 +7,7 @@ public class Collectable : MonoBehaviour
     public int id;
     public void Collect_Item()
     {
-        CollectionManager.Stage01_Collection.Add(id);
-        Destroy(gameObject);
+        
     }
+    // ON START CHECK PLAYERPREFS IF ALLREADY COLLECTED
 }

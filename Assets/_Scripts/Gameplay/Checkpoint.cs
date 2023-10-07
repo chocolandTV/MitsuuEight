@@ -10,7 +10,8 @@ public class Checkpoint : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            // ADD CHECKPOINT TO LIST
+            LapManager.Instance.CheckpointSet(Checkpoint_ID, other.gameObject.transform.position);
+            // sound !
         }
     }
 }

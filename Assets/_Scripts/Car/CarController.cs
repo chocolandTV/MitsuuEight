@@ -25,6 +25,7 @@ public class CarController : MonoBehaviour
     [SerializeField] private float maxSteerAngle;
     [SerializeField] private float maxDriftAngle = 20f;
     [SerializeField] private Color drift1, drift2, drift3;
+    private float lastDriftDirection;
     [SerializeField] public float m_MaxSpeed, m_MaxBoostSpeed;
     [SerializeField] private float m_BoostPower, m_driftMinSpeed;
     private Vector3 m_StartPos;
@@ -33,11 +34,13 @@ public class CarController : MonoBehaviour
     private float realSpeed;
     public float Velocity { get { return CurrentSpeed; } }
     public float CarLife { get; private set; }
+    public float CarNitro { get; private set; }
+    public float CarDamage { get; set; }
     private bool isDriftingLeft = false;
     private bool isDriftingRight = false;
     private bool isSliding = false;
     private bool isDrivingBackwards = false;
-    private float outwardsDirftForce = 50000;
+    private float outwardsDirftForce = 15000;
     private Vector3 DebugPos = Vector3.zero;
 
     private float _currentSteerAngle, _driftTime, car_BoostTime, car_BoostPower;
@@ -61,6 +64,7 @@ public class CarController : MonoBehaviour
         car_BoostPower = 1f;
         carBrakeLight = GetComponent<CarBrakeLight>();
         CarLife = 100f;
+        CarNitro = 100f;
 
     }
     public void ResetPosition()
@@ -74,6 +78,11 @@ public class CarController : MonoBehaviour
         if (!m_IsDrivingEnabled)
         {
             return;
+        }
+        if (CarLife < 0)
+        {
+            DisableDriving();
+            // REPAIR POPUP
         }
         // ACCELERATE
         realSpeed = transform.InverseTransformDirection(m_RigidBody.velocity).z;
@@ -103,7 +112,7 @@ public class CarController : MonoBehaviour
                 carBrakeLight.SetCarBackLights(isDrivingBackwards);
             }
         }
-        if(_AccelerateInput == 0f &&  _brakeInput == 0f)
+        if (_AccelerateInput == 0f && _brakeInput == 0f)
         {
             CurrentSpeed = Mathf.Lerp(CurrentSpeed, 0, Time.fixedDeltaTime * 0.5f);
         }
@@ -127,6 +136,7 @@ public class CarController : MonoBehaviour
 
         if (isDriftingLeft && !isDriftingRight)
         {
+            lastDriftDirection = _moveHorizontalInput < 0 ? -1f : 1f;
             _steerDirection = _moveHorizontalInput < 0 ? -1.5f : -0.5f;
             transform.GetChild(0).localRotation = Quaternion.Lerp(transform.GetChild(0).localRotation, Quaternion.Euler(0, -maxDriftAngle, 0), 8f * Time.fixedDeltaTime);
 
@@ -177,19 +187,19 @@ public class CarController : MonoBehaviour
 
             _driftTime += Time.fixedDeltaTime;
 
-            if (_driftTime >= 1.5f && _driftTime < 4)
+            if (_driftTime >= 0.5f && _driftTime < 1.5f)
             {
                 _DriftPsMain01.startColor = drift1;
                 _DriftPsMain02.startColor = drift1;
 
             }
-            if (_driftTime >= 4f && _driftTime < 7)
+            if (_driftTime >= 1.5f && _driftTime < 2.5f)
             {
                 _DriftPsMain01.startColor = drift2;
                 _DriftPsMain02.startColor = drift2;
 
             }
-            if (_driftTime > 7)
+            if (_driftTime > 2.5f)
             {
                 _DriftPsMain01.startColor = drift3;
                 _DriftPsMain02.startColor = drift3;
@@ -198,9 +208,9 @@ public class CarController : MonoBehaviour
         }
         // RESET
 
-        if (!_isJumping || realSpeed < m_driftMinSpeed)
+        if (!isSliding || realSpeed < m_driftMinSpeed)
         {
-            isDriftingLeft = false; isDriftingRight = false; isSliding = false;
+            isDriftingLeft = false; isDriftingRight = false;
             // BoostIncrease
             car_BoostTime = Mathf.Clamp(_driftTime / 3, 0, 2.5f);
             _driftTime = 0f;
@@ -215,28 +225,34 @@ public class CarController : MonoBehaviour
             BoostEffect();
             CurrentSpeed = Mathf.Lerp(CurrentSpeed, m_MaxSpeed * m_BoostPower, 1 * Time.fixedDeltaTime);
         }
-        if (_boostInput && CarLife > 20 * Time.fixedDeltaTime)
+        if (_boostInput && CarNitro > 20 * Time.fixedDeltaTime)
         {
 
             CurrentSpeed = Mathf.Lerp(CurrentSpeed, m_MaxSpeed * m_BoostPower, 1 * Time.fixedDeltaTime);
-            AddLife(-(20 * Time.fixedDeltaTime));
+            AddCarNitro(-(20 * Time.fixedDeltaTime));
             BoostEffect();
         }
-
+        if (CarDamage > 0)
+        {
+            CarLife -= CarDamage * Time.fixedDeltaTime;
+            CarDamage -= Time.fixedDeltaTime;
+            // DAMAGE EFFECT
+        }
     }
+    
     private void UpdateSingleWheel(Transform wheelTransform)
     {
         wheelTransform.Rotate(0, 0, 90 * Time.fixedDeltaTime * realSpeed * 0.5f);
     }
     public void StartBoostField()
     {
-        car_BoostTime =3f;
+        CurrentSpeed = Mathf.Lerp(CurrentSpeed, m_MaxSpeed * m_BoostPower * 40, 1 * Time.fixedDeltaTime);
     }
     public void StartDrift(float _moveHorizontalInput)
     {
         if (touchingGround)
         {
-            Debug.Log(" StartDrifting");
+
             car_Animator.SetTrigger("isJumping");
             if (_moveHorizontalInput > 0)
             {
@@ -278,15 +294,29 @@ public class CarController : MonoBehaviour
         if (CarLife < 0f)
         {
             CarLife = 0f;
+            // LOSE SCREEN
+        }
+    }
+    public void AddCarNitro(float amount)
+    {
+        CarNitro += amount;
+        if (CarNitro > 100.0f)
+        {
+            CarNitro = 100f;
+        }
+        if (CarNitro < 0f)
+        {
+            CarNitro = 0f;
+
         }
     }
     public void SetBoostCapacity(float amount)
     {
-        CarLife = amount;
+        CarNitro = amount;
     }
     public void ResetBoost()
     {
-        CarLife = 0f;
+        CarNitro = 100f;
     }
     public void BoostEffect()
     {
