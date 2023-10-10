@@ -36,7 +36,7 @@ public class CarLogic : MonoBehaviour
         if(other.CompareTag("Obstacle"))
         {
             Debug.Log("ObstacleCrash - Get Damage");
-            m_car.CarDamage +=other.GetComponent<ObstacleDamage>().Damage;
+            m_car.AddLife(-other.GetComponent<ObstacleDamage>().Damage);
             Destroy(other.gameObject);
         }
     }

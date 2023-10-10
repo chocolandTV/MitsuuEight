@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/gameScene.unity
+    path: Assets/Scenes/Stage01_Esterchester.unity
     guid: 7806ad5bf130ac7409efa3e635525ad2
   m_configObjects: {}

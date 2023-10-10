@@ -26,6 +26,7 @@ public class CarController : MonoBehaviour
     [SerializeField] private float maxDriftAngle = 20f;
     [SerializeField] private Color drift1, drift2, drift3;
     private float lastDriftDirection;
+    private int DriftEffectState;
     [SerializeField] public float m_MaxSpeed, m_MaxBoostSpeed;
     [SerializeField] private float m_BoostPower, m_driftMinSpeed;
     private Vector3 m_StartPos;
@@ -35,7 +36,6 @@ public class CarController : MonoBehaviour
     public float Velocity { get { return CurrentSpeed; } }
     public float CarLife { get; private set; }
     public float CarNitro { get; private set; }
-    public float CarDamage { get; set; }
     private bool isDriftingLeft = false;
     private bool isDriftingRight = false;
     private bool isSliding = false;
@@ -65,6 +65,7 @@ public class CarController : MonoBehaviour
         carBrakeLight = GetComponent<CarBrakeLight>();
         CarLife = 100f;
         CarNitro = 100f;
+        DriftEffectState = 0;
 
     }
     public void ResetPosition()
@@ -136,12 +137,13 @@ public class CarController : MonoBehaviour
 
         if (isDriftingLeft && !isDriftingRight)
         {
-            lastDriftDirection = _moveHorizontalInput < 0 ? -1f : 1f;
+
             _steerDirection = _moveHorizontalInput < 0 ? -1.5f : -0.5f;
             transform.GetChild(0).localRotation = Quaternion.Lerp(transform.GetChild(0).localRotation, Quaternion.Euler(0, -maxDriftAngle, 0), 8f * Time.fixedDeltaTime);
 
             if (isSliding && touchingGround)
             {
+
                 m_RigidBody.AddForce(transform.right * outwardsDirftForce * Time.fixedDeltaTime, ForceMode.Acceleration);
                 Drift_Emit(0);
             }
@@ -154,6 +156,7 @@ public class CarController : MonoBehaviour
 
             if (isSliding && touchingGround)
             {
+
                 m_RigidBody.AddForce(transform.right * -outwardsDirftForce * Time.fixedDeltaTime, ForceMode.Acceleration);
                 Drift_Emit(1);
             }
@@ -182,29 +185,27 @@ public class CarController : MonoBehaviour
         }
         // DRIFT 
 
-        if (_moveHorizontalInput != 0 && touchingGround && CurrentSpeed > m_driftMinSpeed && _isJumping)
+        if (touchingGround && CurrentSpeed > m_driftMinSpeed && isSliding)
         {
 
             _driftTime += Time.fixedDeltaTime;
 
-            if (_driftTime >= 0.5f && _driftTime < 1.5f)
+            if (_driftTime >= 0.5f && _driftTime < 1.5f || lastDriftDirection != (_moveHorizontalInput < 0 ? -1f : 1f) && DriftEffectState == 0)
             {
-                _DriftPsMain01.startColor = drift1;
-                _DriftPsMain02.startColor = drift1;
+                DriftEffectColor(1);
 
             }
-            if (_driftTime >= 1.5f && _driftTime < 2.5f)
+            if (_driftTime >= 1.5f && _driftTime < 2.5f || lastDriftDirection != (_moveHorizontalInput < 0 ? -1f : 1f) && DriftEffectState == 1)
             {
-                _DriftPsMain01.startColor = drift2;
-                _DriftPsMain02.startColor = drift2;
+                DriftEffectColor(2);
 
             }
-            if (_driftTime > 2.5f)
+            if (_driftTime > 2.5f || lastDriftDirection != (_moveHorizontalInput < 0 ? -1f : 1f) && DriftEffectState == 2)
             {
-                _DriftPsMain01.startColor = drift3;
-                _DriftPsMain02.startColor = drift3;
+                DriftEffectColor(3);
 
             }
+            lastDriftDirection = _moveHorizontalInput < 0 ? -1f : 1f;
         }
         // RESET
 
@@ -214,6 +215,7 @@ public class CarController : MonoBehaviour
             // BoostIncrease
             car_BoostTime = Mathf.Clamp(_driftTime / 3, 0, 2.5f);
             _driftTime = 0f;
+            DriftEffectState = 0;
             DriftParticle(0, false, Color.yellow);
             DriftParticle(1, false, Color.yellow);
 
@@ -232,14 +234,43 @@ public class CarController : MonoBehaviour
             AddCarNitro(-(20 * Time.fixedDeltaTime));
             BoostEffect();
         }
-        if (CarDamage > 0)
-        {
-            CarLife -= CarDamage * Time.fixedDeltaTime;
-            CarDamage -= Time.fixedDeltaTime;
-            // DAMAGE EFFECT
-        }
+        
     }
-    
+    private void DriftEffectColor(int step)
+    {
+        switch (step)
+        {
+            case 1:
+                {
+                    _DriftPsMain01.startColor = drift1;
+                    _DriftPsMain02.startColor = drift1;
+                    DriftEffectState = 1;
+                    break;
+                }
+            case 2:
+                {
+                    _DriftPsMain01.startColor = drift2;
+                    _DriftPsMain02.startColor = drift2;
+                    DriftEffectState = 2;
+                    break;
+                }
+            case 3:
+                {
+                    _DriftPsMain01.startColor = drift3;
+                    _DriftPsMain02.startColor = drift3;
+                    DriftEffectState = 3;
+                    break;
+                }
+            default:
+                {
+                    _DriftPsMain01.startColor = drift1;
+                    _DriftPsMain02.startColor = drift1;
+                    DriftEffectState = 1;
+                    break;
+                }
+        }
+
+    }
     private void UpdateSingleWheel(Transform wheelTransform)
     {
         wheelTransform.Rotate(0, 0, 90 * Time.fixedDeltaTime * realSpeed * 0.5f);
