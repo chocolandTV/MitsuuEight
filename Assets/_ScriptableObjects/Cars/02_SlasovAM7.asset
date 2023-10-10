@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59c22b0dd697abf4b8607ef8ac957b51, type: 3}
+  m_Name: 02_SlasovAM7
+  m_EditorClassIdentifier: 
+  CarIndex: 1
+  MaxSpeed: 260
+  Accelerate: 6
+  Handling: 4
+  CarName: Slasov AM7
+  CarDescription: Hyper Zero Gravity  PuslarEnergy
+  nameColor1: {r: 1, g: 0.42874607, b: 0.33490568, a: 1}
+  nameColor2: {r: 0.9434609, g: 1, b: 0.3443396, a: 1}
+  CarImage: {fileID: 2800000, guid: e9fc1528795e6c349b7fa6f101e81485, type: 3}
+  Prefab: {fileID: 8932952629579037136, guid: 9d4b8420d912a2344ac2b868f7cb8247, type: 3}

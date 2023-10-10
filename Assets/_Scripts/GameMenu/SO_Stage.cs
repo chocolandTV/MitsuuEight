@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 [CreateAssetMenu (fileName ="New Stage", menuName ="Scriptable Objects/Stage")]
-public class Stage : ScriptableObject
+public class SO_Stage : ScriptableObject
 {
     public enum Difficult
     {
@@ -17,6 +17,6 @@ public class Stage : ScriptableObject
     public string mapDescription;
     public Difficult difficult;
     public Color nameColor1, nameColor2;
-    public Sprite mapImage;
+    public Texture mapImage;
     public Object sceneToLoad;
 }
