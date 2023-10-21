@@ -5,8 +5,8 @@ using UnityEngine.PlayerLoop;
 
 public class LapManager : MonoBehaviour
 {
-    [SerializeField] private int Lap_Rounds;
-    [SerializeField] private int Lap_Checkpoints;
+    private const int Lap_Rounds = 8;
+    private const int Lap_Checkpoints = 7;
     private List<bool> checkPointsDone = new List<bool>();
     private List<Vector3> GhostData = new List<Vector3>();
     public static int Lap_Current =1;
@@ -27,7 +27,7 @@ public class LapManager : MonoBehaviour
         {
             checkPointsDone.Add(false);
         }
-        checkPointsDone[Lap_Checkpoints-1] = true;
+        
     }
     public int GetLapRounds()
     {
@@ -40,9 +40,24 @@ public class LapManager : MonoBehaviour
         stageStarts = true;
         HUD_Manager.StageStartTime  = Time.timeSinceLevelLoad;
     }
-    
+    public void CheckNextRound(Vector3 pos)
+    {
+        if(Lap_Current >= Lap_Rounds)
+            {
+                HUD_Manager.Instance.UpdateTimeLapRoundText(Lap_Current,Time.timeSinceLevelLoad-HUD_Manager.StageStartTime);
+                StageWin();
+                return;
+            }
+        if(CheckLapProgress())
+        {    
+            GhostData.Add(pos);
+            NextRound();
+        }    
+        
+    }
     public void CheckpointSet(int _checkpoint_id, Vector3 pos)
     {
+        
         if(checkPointsDone[_checkpoint_id] == false)
         {
             checkPointsDone[_checkpoint_id] = true;
@@ -51,31 +66,23 @@ public class LapManager : MonoBehaviour
         }
         else{
             Debug.Log("Checkpoint: Allready Checked");
-            if(checkPointsDone[Lap_Checkpoints-1] == true && Lap_Current == 1)
-            {
-                checkPointsDone[Lap_Checkpoints-1] = false;
-            }
+            
         }
-        if(CheckLapProgress())
-        {
-            if(Lap_Current >= Lap_Rounds)
-            {
-                HUD_Manager.Instance.UpdateTimeLapRoundText(Lap_Current,Time.timeSinceLevelLoad-HUD_Manager.StageStartTime);
-                StageWin();
-                return;
-            }else{
+        
+    }
+    private void NextRound()
+    {
             HUD_Manager.Instance.UpdateTimeLapRoundText(Lap_Current,Time.timeSinceLevelLoad-HUD_Manager.StageStartTime);
             Debug.Log("Next Round");
             Lap_Current ++;
-            HUD_Manager.Instance.UpdateLapRound();
+            HUD_Manager.Instance.UpdateLapRound(Lap_Current);
             ResetCheckPoints();
-            }
-        }
     }
     private void StageWin()
     {
         Debug.Log("Win Stage");
-        // STOP TIMER
+        HUD_Manager.Instance.SetTimer(false);
+        
         // CAR CONTROLL OFF
         // SAFE GHOST POSITIONS
         // END SCREEN
@@ -101,9 +108,13 @@ public class LapManager : MonoBehaviour
         }
         if(_ChecksMissing > 0)
         {
+            Debug.Log(_ChecksMissing);
+            Debug.Log(checkPointsDone.Count);
             return false;
         }
         else{
+            Debug.Log(_ChecksMissing);
+            Debug.Log(checkPointsDone.Count);
             return true;
         }
     }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CarIndex: 1
   MaxSpeed: 260
-  Accelerate: 6
+  Accelerate: 4
   Handling: 4
   CarName: Slasov AM7
   CarDescription: Hyper Zero Gravity  PuslarEnergy

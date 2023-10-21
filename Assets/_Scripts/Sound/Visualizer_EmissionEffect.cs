@@ -6,16 +6,16 @@ public class Visualizer_EmissionEffect : MonoBehaviour
 {
     [SerializeField]private Material material, material2;
     private int audioBand;
-    private Color color, color2;
+    [SerializeField]private Color color, color2;
     private AudioVisualizer audioVisualizer;
     // Start is called before the first frame update
     void Start()
     {
 
         audioVisualizer = GetComponent<AudioVisualizer>();
-        audioBand=Random.Range(2,7);
-        color= material.GetVector("_EmissionColor");
-        color2= material2.GetVector("_EmissionColor");
+        // audioBand=Random.Range(2,7);
+        // color= material.GetVector("_EmissionColor");
+        // color2= material2.GetVector("_EmissionColor");
         
 
     }
@@ -25,7 +25,7 @@ public class Visualizer_EmissionEffect : MonoBehaviour
     {
         
         material.SetVector("_EmissionColor", color* audioVisualizer._audioBandBuffer[0]*5);
-        material2.SetVector("_EmissionColor", color2* audioVisualizer._audioBandBuffer[audioBand]*5);
+        material2.SetVector("_EmissionColor", color2* audioVisualizer._audioBandBuffer[4]*5);
         
         
     }

@@ -66,15 +66,19 @@ public class HUD_Manager : MonoBehaviour
         time_text.text = TimeSpan.FromSeconds(Time.timeSinceLevelLoad - StageStartTime).ToString("m\\:ss\\.fff");
 
     }
+    public void SetTimer(bool value)
+    {
+        time_text.gameObject.SetActive(value);
+    }
     public void UpdateTimeLapRoundText(int RoundID, float time)
     {
         RoundTextList[RoundID].SetActive(true);
         RoundTextList[RoundID].GetComponent<TextMeshProUGUI>().text = TimeSpan.FromSeconds(time).ToString("m\\:ss\\.fff");
     }
-    public void UpdateLapRound()
+    public void UpdateLapRound(int lapCurrent)
     {
         // LAP ROUND
-        changeSprites[3].texture = numbers[LapManager.Lap_Current];
+        changeSprites[3].texture = numbers[lapCurrent];
     }
     public void UpdateCollectables()
     {
