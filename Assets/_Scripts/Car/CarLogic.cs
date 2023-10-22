@@ -29,8 +29,8 @@ public class CarLogic : MonoBehaviour
         }
         if(other.CompareTag("Collectable_Cash"))
         {
-            Debug.Log("Collect 1coin ");
-            CollectionManager.CoinWallet ++;
+            
+            CollectionManager.Instance.SetCoin(other.GetComponent<CoinIndex>().GetCoinIndex(), GameManager.Game_stageIndex);
             Destroy(other.gameObject);
         }
         if(other.CompareTag("Obstacle"))

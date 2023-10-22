@@ -31,7 +31,7 @@ Transform:
   m_Children:
   - {fileID: 3044523234576722312}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &5642817527197094420
 BoxCollider:
@@ -123,7 +123,9 @@ PrefabInstance:
       value: Coin
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 65702495048144492, guid: 82ea9e67735cdf64382b0a9afc83db20, type: 3}
+    - {fileID: -8700617353114198275, guid: 82ea9e67735cdf64382b0a9afc83db20, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 82ea9e67735cdf64382b0a9afc83db20,

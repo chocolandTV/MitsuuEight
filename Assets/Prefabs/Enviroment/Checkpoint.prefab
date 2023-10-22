@@ -4947,7 +4947,7 @@ Transform:
   - {fileID: 1933000502655652729}
   - {fileID: 779817039951011222}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2047481258862587298
 MonoBehaviour:
@@ -4997,7 +4997,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   particleSystem_01: {fileID: 4256537396813904079}
   particleSystem_02: {fileID: 2643055212406486553}
-  maxSize: 20
+  maxSize: 30
   minSize: 1
 --- !u!1 &6193386424914088136
 GameObject:

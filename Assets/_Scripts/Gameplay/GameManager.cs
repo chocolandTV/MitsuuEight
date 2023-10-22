@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
        Paused
     }
     private GameState current_GameState;
+    public static int Game_stageIndex {get; private set;}=1;
     void Awake()
     {
         if (Instance != null)

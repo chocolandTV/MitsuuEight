@@ -43,7 +43,7 @@ public class CarController : MonoBehaviour
     private float outwardsDirftForce = 15000;
     private Vector3 DebugPos = Vector3.zero;
 
-    private float _currentSteerAngle, _driftTime, car_BoostTime, car_BoostPower;
+    private float _currentSteerAngle, _driftTime, car_BoostTime;
 
     public void DisableDriving()
     {
@@ -61,7 +61,7 @@ public class CarController : MonoBehaviour
         _DriftPsMain02 = m_DriftParticles[1].main;
         car_BoostTime = 0f;
         CurrentSpeed = 0f;
-        car_BoostPower = 1f;
+
         carBrakeLight = GetComponent<CarBrakeLight>();
         CarLife = 100f;
         CarNitro = 100f;
@@ -227,14 +227,14 @@ public class CarController : MonoBehaviour
             BoostEffect();
             CurrentSpeed = Mathf.Lerp(CurrentSpeed, m_MaxSpeed * m_BoostPower, 1 * Time.fixedDeltaTime);
         }
-        if (_boostInput && CarNitro > 20 * Time.fixedDeltaTime)
+        if (_boostInput && CarNitro > 0)
         {
 
             CurrentSpeed = Mathf.Lerp(CurrentSpeed, m_MaxSpeed * m_BoostPower, 1 * Time.fixedDeltaTime);
             AddCarNitro(-(20 * Time.fixedDeltaTime));
             BoostEffect();
         }
-        
+
     }
     private void DriftEffectColor(int step)
     {
@@ -325,8 +325,9 @@ public class CarController : MonoBehaviour
         if (CarLife < 0f)
         {
             CarLife = 0f;
-            // LOSE SCREEN
+            // LOSE SCREEN GAME OVER
         }
+        HUD_Manager.Instance.ChangeLife(CarLife);
     }
     public void AddCarNitro(float amount)
     {
@@ -340,6 +341,7 @@ public class CarController : MonoBehaviour
             CarNitro = 0f;
 
         }
+        HUD_Manager.Instance.ChangeNitro(CarNitro / 100);
     }
     public void SetBoostCapacity(float amount)
     {
@@ -354,9 +356,5 @@ public class CarController : MonoBehaviour
         m_BoostParticleObjects[0].Emit((int)m_BoostPower * 5);
         m_BoostParticleObjects[1].Emit((int)m_BoostPower * 5);
     }
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawCube(DebugPos, Vector3.one);
-    }
+
 }
