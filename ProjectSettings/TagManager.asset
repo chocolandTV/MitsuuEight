@@ -8,6 +8,7 @@ TagManager:
   - BoostField
   - Collectable_Cash
   - Obstacle
+  - Collectable_Car
   layers:
   - Default
   - TransparentFX

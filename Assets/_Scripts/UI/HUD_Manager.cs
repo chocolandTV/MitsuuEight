@@ -15,8 +15,8 @@ public class HUD_Manager : MonoBehaviour
     [SerializeField] private List<GameObject> RoundTextList;
     [SerializeField] private TextMeshProUGUI time_text;
     [SerializeField] private List<Texture2D> numbers;
-    [SerializeField] private GameObject ShowTimeTextValue, ShowTimeTextDefault;
-    [SerializeField] private Image CollectableIcon;
+    [SerializeField] private GameObject ShowTimeTextValue, ShowTimeTextDefault, CarCollectedIcon;
+    [SerializeField] private RawImage CollectableIcon;
     private CarUserControl m_carUserControl;
     public static float StageStartTime;
     public static HUD_Manager Instance { get; private set; }
@@ -41,6 +41,7 @@ public class HUD_Manager : MonoBehaviour
         changeSprites[0].texture = numbers[1];
         changeSprites[1].texture = numbers[0];
         changeSprites[2].texture = numbers[0];
+        CarCollectedIcon.SetActive(false);
     }
     // Start is called before the first frame update
     private void Update_HUD()
@@ -120,6 +121,10 @@ public class HUD_Manager : MonoBehaviour
     public void UpdateCollectableIcon(Color color)
     {
         CollectableIcon.color = color;
+    }
+    public void UpdateCarCollectedIcon(bool value)
+    {
+        CarCollectedIcon.SetActive(value);
     }
     // Update is called once per frame
     void Update()

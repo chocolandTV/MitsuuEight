@@ -67,6 +67,12 @@ public class CollectionManager : MonoBehaviour
             HUD_Manager.Instance.UpdateCollectableIcon(collectIconColor_Clear);
         }
     }
+    public void SetCar(int stage)
+    {
+        CarWallet[stage] = 1;
+        HUD_Manager.Instance.UpdateCarCollectedIcon(true);
+        SaveGameManager.SaveData(this);
+    }
     public void LoadLevelCoins(int stage)
     {
         // LOAD FROM PLAYERPREFS

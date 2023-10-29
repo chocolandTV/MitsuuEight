@@ -47,7 +47,7 @@ public class LapManager : MonoBehaviour
         HUD_Manager.StageStartTime = Time.timeSinceLevelLoad;
         HUD_Manager.Instance.SetTimerText(true); 
         HUD_Manager.Instance.ResetTimeLapRoundsText();
-        HUD_Manager.Instance.UpdateCollectables(CollectionManager.Instance.GetCoins(GameManager.Game_stageIndex));
+        HUD_Manager.Instance.UpdateCollectables(CollectionManager.Instance.GetCoins(GameManager.Game_CurrentStage));
     }
     public void CheckNextRound(Vector3 pos)
     {

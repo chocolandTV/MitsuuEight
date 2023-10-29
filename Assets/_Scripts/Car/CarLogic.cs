@@ -30,13 +30,18 @@ public class CarLogic : MonoBehaviour
         if(other.CompareTag("Collectable_Cash"))
         {
             
-            CollectionManager.Instance.SetCoin(other.GetComponent<CoinIndex>().GetCoinIndex(), GameManager.Game_stageIndex);
+            CollectionManager.Instance.SetCoin(other.GetComponent<CoinIndex>().GetCoinIndex(), GameManager.Game_CurrentStage);
             Destroy(other.gameObject);
         }
         if(other.CompareTag("Obstacle"))
         {
             Debug.Log("ObstacleCrash - Get Damage");
             m_car.AddLife(-other.GetComponent<ObstacleDamage>().Damage);
+            Destroy(other.gameObject);
+        }
+        if(other.CompareTag("Collectable_Car"))
+        {
+            CollectionManager.Instance.SetCar(GameManager.Game_CurrentStage);
             Destroy(other.gameObject);
         }
     }
